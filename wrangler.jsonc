@@ -30,8 +30,8 @@
   "d1_databases": [
     {
       "binding": "DB",
-      "database_name": "__change_me__",
-      "database_id": "__change_me__"
+      "database_name": "barefeed-applicable-alligator",
+      "database_id": "ca40c308-05a3-4936-ac3a-e9b0c25a9dc4"
     }
   ]
 }
