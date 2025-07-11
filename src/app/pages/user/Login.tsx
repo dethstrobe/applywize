@@ -70,10 +70,10 @@ export function Login() {
         placeholder="Username"
       />
       <Button onClick={handlePerformPasskeyLogin} disabled={isPending}>
-        {isPending ? <>...</> : "Login with passkey"}
+        {isPending ? "..." : "Login with passkey"}
       </Button>
       <Button onClick={handlePerformPasskeyRegister} disabled={isPending}>
-        {isPending ? <>...</> : "Register with passkey"}
+        {isPending ? "..." : "Register with passkey"}
       </Button>
       {result && <div>{result}</div>}
     </main>

@@ -2,7 +2,7 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "__change_me__",
   "main": "src/worker.tsx",
-  "compatibility_date": "2024-09-23",
+  "compatibility_date": "2025-05-07",
   "compatibility_flags": ["nodejs_compat"],
   "assets": {
     "binding": "ASSETS"
@@ -30,8 +30,8 @@
   "d1_databases": [
     {
       "binding": "DB",
-      "database_name": "barefeed-applicable-alligator",
-      "database_id": "ca40c308-05a3-4936-ac3a-e9b0c25a9dc4"
+      "database_name": "__change_me__",
+      "database_id": "__change_me__"
     }
   ]
 }
