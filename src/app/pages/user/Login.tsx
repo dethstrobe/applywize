@@ -3,15 +3,13 @@
 import { useState, useTransition } from "react";
 import {
   startAuthentication,
-  startRegistration,
 } from "@simplewebauthn/browser";
 import {
   finishPasskeyLogin,
-  finishPasskeyRegistration,
   startPasskeyLogin,
-  startPasskeyRegistration,
 } from "./functions";
 import { Button } from "@/app/components/ui/button";
+import { AuthLayout } from "@/app/layouts/AuthLayout";
 
 export function Login() {
   const [username, setUsername] = useState("");
@@ -35,47 +33,33 @@ export function Login() {
     }
   };
 
-  const passkeyRegister = async () => {
-    // 1. Get a challenge from the worker
-    const options = await startPasskeyRegistration(username);
-
-    // 2. Ask the browser to sign the challenge
-    const registration = await startRegistration({ optionsJSON: options });
-
-    // 3. Give the signed challenge to the worker to finish the registration process
-    const success = await finishPasskeyRegistration(username, registration);
-
-    if (!success) {
-      setResult("Registration failed");
-    } else {
-      setResult("Registration successful!");
-    }
-  };
-
   const handlePerformPasskeyLogin = () => {
     startTransition(() => void passkeyLogin());
   };
 
-  const handlePerformPasskeyRegister = () => {
-    startTransition(() => void passkeyRegister());
-  };
-
   return (
-    <main className="bg-bg">
-      <h1 className="text-4xl font-bold text-red-500">YOLO</h1>
-      <input
-        type="text"
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
-        placeholder="Username"
-      />
-      <Button onClick={handlePerformPasskeyLogin} disabled={isPending}>
-        {isPending ? "..." : "Login with passkey"}
-      </Button>
-      <Button onClick={handlePerformPasskeyRegister} disabled={isPending}>
-        {isPending ? "..." : "Register with passkey"}
-      </Button>
-      {result && <div>{result}</div>}
-    </main>
+    <AuthLayout>
+      <div className="absolute top-0 right-0 p-10">
+        <a href="/user/signup" className="font-display font-bold text-black text-sm underline-offset-8 hover:decoration-primary">
+          Register
+        </a>
+      </div>
+      <div className="max-w-[400px] w-full mx-auto px-10">
+        <h1 className="text-center">Login</h1>
+        <p className="py-6">Enter your username below to sign-in.</p>
+
+        <input
+          type="text"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          placeholder="Username"
+        />
+        <Button onClick={handlePerformPasskeyLogin} disabled={isPending}>
+          {isPending ? "..." : "Login with passkey"}
+        </Button>
+        {result && <div>{result}</div>}
+        <p>By clicking continue, you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.</p>
+      </div>
+    </AuthLayout>
   );
 }
