@@ -50,8 +50,8 @@ export function Login() {
         <h1 className="page-title text-center">Login</h1>
         <p className="py-6">Enter your username below to sign-in.</p>
         {result && (
-          <Alert>
-            <AlertCircle className="mb-5" />
+          <Alert variant="destructive" className="mb-5">
+            <AlertCircle className="h-4 w-4" />
             <AlertTitle>{result}</AlertTitle>
           </Alert>
         )}
