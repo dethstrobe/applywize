@@ -7,6 +7,7 @@ import { Button } from "@/app/components/ui/button"
 import { AuthLayout } from "@/app/layouts/AuthLayout"
 import { Alert, AlertTitle } from "@/app/components/ui/alert"
 import { AlertCircle } from "lucide-react"
+import { link } from "@/app/shared/links"
 
 export function Login() {
   const [username, setUsername] = useState("")
@@ -39,7 +40,7 @@ export function Login() {
     <AuthLayout>
       <div className="absolute top-0 right-0 p-10">
         <a
-          href="/user/signup"
+          href={link("/user/signup")}
           className="font-display font-bold text-black text-sm underline-offset-8 hover:decoration-primary"
         >
           Register
@@ -70,7 +71,7 @@ export function Login() {
         </Button>
         <p>
           By clicking continue, you agree to our{" "}
-          <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.
+          <a href={link("/legal/terms")}>Terms of Service</a> and <a href={link("/legal/privacy")}>Privacy Policy</a>.
         </p>
       </div>
     </AuthLayout>
