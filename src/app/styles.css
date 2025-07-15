@@ -91,7 +91,7 @@ body {
   --color-popover: var(--popover);
   --color-popover-foreground: var(--popover-foreground);
   --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
+  --color-primary-foreground: #000;
   --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
   --color-muted: var(--muted);
@@ -135,12 +135,37 @@ body {
   --color-tag-offer: #aae198;
 }
 
+@layer base, components, page;
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
   body {
     @apply bg-background text-foreground;
+  }
+  h1, h2, h3 {
+    @apply font-display font-bold;
+  }
+  input[type="text"] {
+    @apply border-border border-1 rounded-md px-3 h-9 block w-full mb-2 text-base;
+  }
+}
+
+@layer components {
+  .page-title {
+    @apply text-3xl;
+  }
+}
+
+@layer page {
+  .auth-form {
+    p {
+      @apply text-sm text-zinc-500 text-center;
+      a {
+        @apply text-zinc-500 hover:text-black underline whitespace-nowrap;
+      }
+    }
   }
 }
 
