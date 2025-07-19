@@ -61,12 +61,15 @@ export const Signup = () => {
             <AlertTitle>{result}</AlertTitle>
           </Alert>
         )}
-        <input
-          type="text"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          placeholder="Username"
-        />
+        <label>
+          <span className="sr-only">Username</span>
+          <input
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            placeholder="Username"
+          />
+        </label>
         <Button onClick={handlePerformPasskeyRegister} disabled={isPending} className="font-display w-full mb-6">
           {isPending ? "..." : "Register with passkey"}
         </Button>

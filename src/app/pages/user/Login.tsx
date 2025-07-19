@@ -28,7 +28,7 @@ export function Login() {
       setResult("Login failed")
     } else {
       setResult("Login successful!")
-      window.location.href = "/protected";
+      window.location.href = "/protected"
     }
   }
 
@@ -56,12 +56,15 @@ export function Login() {
           </Alert>
         )}
 
-        <input
-          type="text"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          placeholder="Username"
-        />
+        <label>
+          Username
+          <input
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            placeholder="Username"
+          />
+        </label>
         <Button
           onClick={handlePerformPasskeyLogin}
           disabled={isPending}
@@ -71,7 +74,8 @@ export function Login() {
         </Button>
         <p>
           By clicking continue, you agree to our{" "}
-          <a href={link("/legal/terms")}>Terms of Service</a> and <a href={link("/legal/privacy")}>Privacy Policy</a>.
+          <a href={link("/legal/terms")}>Terms of Service</a> and{" "}
+          <a href={link("/legal/privacy")}>Privacy Policy</a>.
         </p>
       </div>
     </AuthLayout>
