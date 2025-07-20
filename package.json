@@ -55,7 +55,7 @@
     "@cloudflare/vite-plugin": "1.7.4",
     "@cloudflare/workers-types": "^4.20250407.0",
     "@playwright/test": "^1.54.1",
-    "@test2doc/playwright": "^0.3.2",
+    "@test2doc/playwright": "^0.3.3",
     "@types/node": "^22.14.0",
     "@types/react": "^19.1.2",
     "@types/react-dom": "^19.1.2",

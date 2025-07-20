@@ -3,15 +3,18 @@ import { screenshot } from "@test2doc/playwright/screenshots"
 
 test.describe("Sign up Page", () => {
   test("Navigate to the login in page", async ({ page }, testInfo) => {
-    test.step("On the sign up page", async () => {
+    await test.step("On the sign up page", async () => {
       await page.goto("/user/signup")
+
+      await screenshot(testInfo, page)
+
       await expect(
         page.getByRole("heading", { name: "Create an Account" }),
       ).toBeVisible()
-      await screenshot(testInfo, page)
+      console.log("Sign up page loaded", Date.now())
     })
 
-    test.step("Click the login link", async () => {
+    await test.step("Click the login link", async () => {
       const loginLink = page.getByRole("link", { name: "Login" })
 
       await screenshot(testInfo, loginLink)
@@ -21,19 +24,24 @@ test.describe("Sign up Page", () => {
       ).not.toBeAttached()
 
       await loginLink.click()
-    })
 
-    await expect(page.getByRole("heading", { name: "Login" })).toBeVisible()
+      await expect(page.getByRole("heading", { name: "Login" })).toBeVisible()
+      console.log("Navigated to login page", Date.now())
+    })
   })
 
   test("Navigate to the privacy policy", async ({ page }, testInfo) => {
-    test.step("On the sign up page", async () => {
+    await test.step("On the sign up page", async () => {
       await page.goto("/user/signup")
 
       await screenshot(testInfo, page)
+
+      expect(
+        page.getByRole("heading", { name: "Create an Account" }),
+      ).toBeVisible()
     })
 
-    test.step("Click the privacy policy link", async () => {
+    await test.step("Click the privacy policy link", async () => {
       const privacyPolicyLink = page.getByRole("link", {
         name: "Privacy Policy",
       })
@@ -45,21 +53,25 @@ test.describe("Sign up Page", () => {
       ).not.toBeAttached()
 
       await privacyPolicyLink.click()
-    })
 
-    await expect(
-      page.getByRole("heading", { name: "Privacy Policy" }),
-    ).toBeVisible()
+      await expect(
+        page.getByRole("heading", { name: "Privacy Policy" }),
+      ).toBeVisible()
+    })
   })
 
   test("Navigate to the terms of service", async ({ page }, testInfo) => {
-    test.step("On the sign up page", async () => {
+    await test.step("On the sign up page", async () => {
       await page.goto("/user/signup")
 
       await screenshot(testInfo, page)
+
+      await expect(
+        page.getByRole("heading", { name: "Create an Account" }),
+      ).toBeVisible()
     })
 
-    test.step("Click the terms of service link", async () => {
+    await test.step("Click the terms of service link", async () => {
       const termsOfServiceLink = page.getByRole("link", {
         name: "Terms of Service",
       })
