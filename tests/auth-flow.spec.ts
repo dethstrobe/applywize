@@ -1,167 +1,244 @@
-import { test, expect, type CDPSession } from "@playwright/test"
+import {
+  test,
+  expect,
+  type CDPSession,
+  BrowserContext,
+  Page,
+} from "@playwright/test"
 import { screenshot } from "@test2doc/playwright/screenshots"
 import { withDocCategory, withDocMeta } from "@test2doc/playwright/DocMeta"
 
 test.describe(
-  withDocCategory("User Authentication Flow", { label: "User Authentication" }),
+  withDocCategory("User Authentication Flow", {
+    label: "User Authentication",
+    position: 1,
+  }),
   () => {
-    test.describe("Authentication", () => {
-      const username = `testuser-${Date.now()}`
+    test.describe
+      .serial(withDocMeta("Authentication", { sidebar_position: 1 }), () => {
+        const username = `testuser-${Date.now()}`
+        let client: CDPSession
+        let authenticatorId: string
+        let sharedContext: BrowserContext
+        let sharedPage: Page
 
-      async function simulateSuccessfulPasskeyInput(
-        client: CDPSession,
-        authenticatorId: string,
-        operationTrigger: () => Promise<void>,
-      ) {
-        // initialize event listeners to wait for a successful passkey input event
-        const operationCompleted = new Promise<void>((resolve) => {
-          client.on("WebAuthn.credentialAdded", () => resolve())
-          client.on("WebAuthn.credentialAsserted", () => resolve())
+        test.beforeAll(async ({ browser }) => {
+          // Create shared context for both tests
+          sharedContext = await browser.newContext()
+          sharedPage = await sharedContext.newPage()
         })
 
-        // set isUserVerified option to true
-        // (so that subsequent passkey operations will be successful)
-        await client.send("WebAuthn.setUserVerified", {
-          authenticatorId: authenticatorId,
-          isUserVerified: true,
+        test.afterAll(async () => {
+          await client?.detach()
+          await sharedContext?.close()
         })
 
-        // set automaticPresenceSimulation option to true
-        // (so that the virtual authenticator will respond to the next passkey prompt)
-        await client.send("WebAuthn.setAutomaticPresenceSimulation", {
-          authenticatorId: authenticatorId,
-          enabled: true,
-        })
+        async function simulateSuccessfulPasskeyInput(
+          client: CDPSession,
+          authenticatorId: string,
+          operationTrigger: () => Promise<void>,
+        ) {
+          // initialize event listeners to wait for a successful passkey input event
+          const operationCompleted = new Promise<void>((resolve) => {
+            client.on("WebAuthn.credentialAdded", () => resolve())
+            client.on("WebAuthn.credentialAsserted", () => resolve())
+          })
 
-        // perform a user action that triggers passkey prompt
-        await operationTrigger()
-
-        // wait to receive the event that the passkey was successfully registered or verified
-        await operationCompleted
-
-        // set automaticPresenceSimulation option back to false
-        await client.send("WebAuthn.setAutomaticPresenceSimulation", {
-          authenticatorId,
-          enabled: false,
-        })
-      }
-
-      test("Register a new user and login", async ({ page }, testInfo) => {
-        const client = await page.context().newCDPSession(page)
-
-        // Enable WebAuthn environment in this session
-        await client.send("WebAuthn.enable")
-
-        // Attach a virtual authenticator with specific options
-        const result = await client.send("WebAuthn.addVirtualAuthenticator", {
-          options: {
-            protocol: "ctap2",
-            transport: "internal",
-            hasResidentKey: true,
-            hasUserVerification: true,
+          // set isUserVerified option to true
+          // (so that subsequent passkey operations will be successful)
+          await client.send("WebAuthn.setUserVerified", {
+            authenticatorId: authenticatorId,
             isUserVerified: true,
-            automaticPresenceSimulation: true,
-          },
+          })
+
+          // set automaticPresenceSimulation option to true
+          // (so that the virtual authenticator will respond to the next passkey prompt)
+          await client.send("WebAuthn.setAutomaticPresenceSimulation", {
+            authenticatorId: authenticatorId,
+            enabled: true,
+          })
+
+          // perform a user action that triggers passkey prompt
+          await operationTrigger()
+
+          // wait to receive the event that the passkey was successfully registered or verified
+          await operationCompleted
+
+          // set automaticPresenceSimulation option back to false
+          await client.send("WebAuthn.setAutomaticPresenceSimulation", {
+            authenticatorId,
+            enabled: false,
+          })
+        }
+
+        test("Register a new user", async ({ page: _ }, testInfo) => {
+          client = await sharedPage.context().newCDPSession(sharedPage)
+
+          // Enable WebAuthn environment in this session
+          await client.send("WebAuthn.enable")
+
+          // Attach a virtual authenticator with specific options
+          const result = await client.send("WebAuthn.addVirtualAuthenticator", {
+            options: {
+              protocol: "ctap2",
+              transport: "internal",
+              hasResidentKey: true,
+              hasUserVerification: true,
+              isUserVerified: true,
+              automaticPresenceSimulation: true,
+            },
+          })
+
+          authenticatorId = result.authenticatorId
+
+          await test.step("On the sign up page", async () => {
+            await sharedPage.goto("/user/signup")
+
+            await screenshot(testInfo, sharedPage)
+
+            const result = await client.send("WebAuthn.getCredentials", {
+              authenticatorId,
+            })
+            expect(result.credentials).toHaveLength(0)
+          })
+
+          await test.step("Fill in the sign up form and submit", async () => {
+            const usernameInput = sharedPage.getByLabel("Username")
+
+            await screenshot(testInfo, usernameInput)
+
+            await usernameInput.fill(username)
+
+            const submitButton = sharedPage.getByRole("button", {
+              name: "Register with passkey",
+            })
+
+            await screenshot(testInfo, submitButton)
+
+            await simulateSuccessfulPasskeyInput(
+              client,
+              authenticatorId,
+              async () => await submitButton.click(),
+            )
+
+            const result2 = await client.send("WebAuthn.getCredentials", {
+              authenticatorId,
+            })
+            expect(result2.credentials).toHaveLength(1)
+          })
+
+          await test.step("On the login page should be able to log in with new passkey", async () => {
+            await expect(
+              sharedPage.getByRole("heading", { name: "Login" }),
+            ).toBeVisible()
+
+            const loginUsernameInput = sharedPage.getByLabel("Username")
+            await loginUsernameInput.fill(username)
+
+            const loginButton = sharedPage.getByRole("button", {
+              name: "Login with passkey",
+            })
+
+            await simulateSuccessfulPasskeyInput(
+              client,
+              authenticatorId,
+              async () => await loginButton.click(),
+            )
+
+            await expect(sharedPage).toHaveURL("/protected")
+
+            await expect(sharedPage.getByRole("paragraph")).toHaveText(
+              `You are logged in as user ${username}`,
+            )
+          })
         })
 
-        const authenticatorId = result.authenticatorId
+        test("Login with an existing user", async ({ page: _ }, testInfo) => {
+          await client.send("WebAuthn.enable")
 
-        await test.step("On the sign up page", async () => {
-          await page.goto("/user/signup")
+          await test.step("On the login page", async () => {
+            await sharedPage.goto("/user/login")
 
-          await screenshot(testInfo, page)
+            await screenshot(testInfo, sharedPage)
 
-          const result = await client.send("WebAuthn.getCredentials", {
-            authenticatorId,
-          })
-          expect(result.credentials).toHaveLength(0)
-        })
-
-        await test.step("Fill in the sign up form and submit", async () => {
-          const usernameInput = page.getByLabel("Username")
-
-          await screenshot(testInfo, usernameInput)
-
-          await usernameInput.fill(username)
-
-          const submitButton = page.getByRole("button", {
-            name: "Register with passkey",
+            const result = await client.send("WebAuthn.getCredentials", {
+              authenticatorId,
+            })
+            expect(result.credentials).toHaveLength(1)
           })
 
-          await screenshot(testInfo, submitButton)
+          await test.step("Enter username in to the login form", async () => {
+            const usernameInput = sharedPage.getByLabel("Username")
 
-          await simulateSuccessfulPasskeyInput(
-            client,
-            authenticatorId,
-            async () => await submitButton.click(),
-          )
+            await screenshot(testInfo, usernameInput)
 
-          const result2 = await client.send("WebAuthn.getCredentials", {
-            authenticatorId,
-          })
-          expect(result2.credentials).toHaveLength(1)
-        })
+            await usernameInput.fill(username)
 
-        await test.step("On the login page should be able to log in with new passkey", async () => {
-          await expect(
-            page.getByRole("heading", { name: "Login" }),
-          ).toBeVisible()
-
-          const loginUsernameInput = page.getByLabel("Username")
-          await loginUsernameInput.fill(username)
-
-          const loginButton = page.getByRole("button", {
-            name: "Login with passkey",
+            await screenshot(testInfo, usernameInput)
           })
 
-          await screenshot(testInfo, loginButton)
+          await test.step("Click submit button", async () => {
+            const submitButton = sharedPage.getByRole("button", {
+              name: "Login with passkey",
+            })
 
-          await simulateSuccessfulPasskeyInput(
-            client,
-            authenticatorId,
-            async () => await loginButton.click(),
-          )
+            await screenshot(testInfo, submitButton)
 
-          await expect(page).toHaveURL("/protected")
+            await simulateSuccessfulPasskeyInput(
+              client,
+              authenticatorId,
+              async () => await submitButton.click(),
+            )
+          })
 
-          await expect(page.getByRole("paragraph")).toHaveText(
-            `You are logged in as user ${username}`,
-          )
+          await test.step("On successful login you'll be redirected to the protected page", async () => {
+            await expect(sharedPage).toHaveURL("/protected")
+
+            await expect(sharedPage.getByRole("paragraph")).toHaveText(
+              `You are logged in as user ${username}`,
+            )
+          })
         })
       })
-    })
 
-    test.describe(withDocMeta("Auth Navigation", {}), () => {
-      test("Link to the sign up page", async ({ page }, testInfo) => {
-        await test.step("Registration link on the login page", async () => {
-          await page.goto("/user/login")
+    test.describe(
+      withDocMeta("Auth Navigation", {
+        sidebar_position: 2,
+        description: "Links to the sign up and login pages",
+      }),
+      () => {
+        test("Link to the sign up page", async ({ page }, testInfo) => {
+          await test.step("Registration link on the login page", async () => {
+            await page.goto("/user/login")
 
-          const signUpLink = page.getByRole("link", { name: "Register" })
+            const signUpLink = page.getByRole("link", { name: "Register" })
 
-          await expect(signUpLink).toHaveAttribute("href", "/user/signup")
-          await expect(signUpLink).toBeVisible()
+            await expect(signUpLink).toHaveAttribute("href", "/user/signup")
+            await expect(signUpLink).toBeVisible()
 
-          await screenshot(testInfo, signUpLink)
+            await screenshot(testInfo, signUpLink)
+          })
         })
-      })
 
-      test("Link to the login page", async ({ page }, testInfo) => {
-        await test.step("Login link on the sign up page", async () => {
-          await page.goto("/user/signup")
+        test("Link to the login page", async ({ page }, testInfo) => {
+          await test.step("Login link on the sign up page", async () => {
+            await page.goto("/user/signup")
 
-          const loginLink = page.getByRole("link", { name: "Login" })
+            const loginLink = page.getByRole("link", { name: "Login" })
 
-          await expect(loginLink).toHaveAttribute("href", "/user/login")
-          await expect(loginLink).toBeVisible()
+            await expect(loginLink).toHaveAttribute("href", "/user/login")
+            await expect(loginLink).toBeVisible()
 
-          await screenshot(testInfo, loginLink)
+            await screenshot(testInfo, loginLink)
+          })
         })
-      })
-    })
+      },
+    )
 
     test.describe(
       withDocCategory("Links to legal documentation", {
         label: "Legal Documentation",
+        position: 3,
       }),
       () => {
         test.describe(
