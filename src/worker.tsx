@@ -1,5 +1,5 @@
 import { defineApp, ErrorResponse } from "rwsdk/worker";
-import { route, render, prefix } from "rwsdk/router";
+import { route, render, prefix, index } from "rwsdk/router";
 import { Document } from "@/app/Document";
 import { Home } from "@/app/pages/Home";
 import { setCommonHeaders } from "@/app/headers";
@@ -8,6 +8,7 @@ import { sessions, setupSessionStore } from "./session/store";
 import { Session } from "./session/durableObject";
 import { type User, db, setupDb } from "@/db";
 import { env } from "cloudflare:workers";
+import { List } from "./app/pages/applications/List";
 export { SessionDurableObject } from "./session/durableObject";
 
 export type AppContext = {
@@ -46,22 +47,24 @@ export default defineApp([
     }
   },
   render(Document, [
-    route("/", () => new Response("Hello, World!")),
-    route("/protected", [
-      ({ ctx }) => {
-        if (!ctx.user) {
-          return new Response(null, {
-            status: 302,
-            headers: { Location: "/user/login" },
-          });
-        }
-      },
-      Home,
-    ]),
+    index([isAuthenticated, Home]),
     prefix("/user", userRoutes),
     prefix("/legal", [
       route("/terms", () => (<h1>Terms of Service</h1>)),
       route("/privacy", () => (<h1>Privacy Policy</h1>)),
     ]),
-  ]),
+    prefix("/applications", [
+      isAuthenticated,
+      route("/", () => (<List />)),
+    ]),
+  ])
 ]);
+
+function isAuthenticated({ ctx }: { ctx: AppContext }) {
+  if(!ctx.user) {
+    return new Response(null, {
+      status: 302,
+      headers: { Location: "/user/login" },
+    });
+  }
+}
