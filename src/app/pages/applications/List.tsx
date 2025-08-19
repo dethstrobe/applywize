@@ -1,3 +1,4 @@
+import { ApplicationsTable } from '@/app/components/ApplicationsTable';
 import { Button } from '@/app/components/ui/button';
 import { InteriorLayout } from '@/app/layouts/InteriorLayout';
 import { link } from '@/app/shared/links';
@@ -12,6 +13,7 @@ export const List = async () => {
         <Button asChild><a href={link("/")}>New Application</a></Button>
       </div>
     </div>
+    <ApplicationsTable />
     <pre>{JSON.stringify(applications, null, 2)}</pre>
   </InteriorLayout>
 };
