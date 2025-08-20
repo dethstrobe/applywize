@@ -28,7 +28,7 @@ export const ApplicationsTable: FC<Props> = ({ applications }) => (
         <TableHead>Company</TableHead>
         <TableHead>Contact</TableHead>
         <TableHead>Salary Range</TableHead>
-        <TableHead>x</TableHead>
+        <TableHead>View</TableHead>
       </TableRow>
     </TableHeader>
     <TableBody>

@@ -145,10 +145,10 @@ test.describe(
               async () => await loginButton.click(),
             )
 
-            await expect(sharedPage).toHaveURL("/protected")
+            await expect(sharedPage).toHaveURL("/applications")
 
-            await expect(sharedPage.getByRole("paragraph")).toHaveText(
-              `You are logged in as user ${username}`,
+            await expect(sharedPage.getByRole("heading")).toHaveText(
+              "All Applications",
             )
           })
         })
@@ -192,10 +192,10 @@ test.describe(
           })
 
           await test.step("On successful login you'll be redirected to the protected page", async () => {
-            await expect(sharedPage).toHaveURL("/protected")
+            await expect(sharedPage).toHaveURL("/applications")
 
-            await expect(sharedPage.getByRole("paragraph")).toHaveText(
-              `You are logged in as user ${username}`,
+            await expect(sharedPage.getByRole("heading")).toHaveText(
+              "All Applications",
             )
           })
         })
