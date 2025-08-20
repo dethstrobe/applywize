@@ -1,19 +1,25 @@
 import { Icon } from "./Icon"
 import { Avatar, AvatarFallback } from "./ui/avatar"
-import { Badge } from "./ui/badge"
+import { Badge, type badgeVariants } from "./ui/badge"
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
   TableRow,
 } from "./ui/table"
+import { Fragment, type FC } from "react"
+import type { ApplicationWithRelations } from "../pages/applications/List"
+import type { VariantProps } from "class-variance-authority"
+import { link } from "../shared/links"
 
-export const ApplicationsTable = () => (
+interface Props {
+  applications: ApplicationWithRelations[]
+}
+
+export const ApplicationsTable: FC<Props> = ({ applications }) => (
   <Table>
-    <TableCaption>A list of your recent invoices.</TableCaption>
     <TableHeader>
       <TableRow>
         <TableHead className="w-[100px]">Status</TableHead>
@@ -26,24 +32,51 @@ export const ApplicationsTable = () => (
       </TableRow>
     </TableHeader>
     <TableBody>
-      <TableRow>
-        <TableCell>
-          <Badge variant="new">New</Badge>
-        </TableCell>
-        <TableCell>April 15, 2025</TableCell>
-        <TableCell>Software Engineer</TableCell>
-        <TableCell>RedwoodJS</TableCell>
-        <TableCell className="flex items-center gap-2">
-          <Avatar>
-            <AvatarFallback>JD</AvatarFallback>
-          </Avatar>
-          John Doe
-        </TableCell>
-        <TableCell>$150,000-$250,000</TableCell>
-        <TableCell>
-          <Icon id="view" />
-        </TableCell>
-      </TableRow>
+      {applications.map((application) => (
+        <TableRow key={application.id}>
+          <TableCell>
+            <Badge
+              variant={
+                application.status.status.toLocaleLowerCase() as VariantProps<
+                  typeof badgeVariants
+                >["variant"]
+              }
+            >
+              {application.status.status}
+            </Badge>
+          </TableCell>
+          <TableCell>
+            {application.dateApplied?.toLocaleDateString("en-US", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })}
+          </TableCell>
+          <TableCell>{application.jobTitle}</TableCell>
+          <TableCell>{application.company.name}</TableCell>
+          <TableCell className="flex items-center gap-2">
+            {application.company.contacts.map((contact) => (
+              <Fragment key={contact.id}>
+                <Avatar>
+                  <AvatarFallback>
+                    {contact.firstName.charAt(0)}
+                    {contact.lastName.charAt(0)}
+                  </AvatarFallback>
+                </Avatar>
+                {contact.firstName} {contact.lastName}
+              </Fragment>
+            ))}
+          </TableCell>
+          <TableCell>
+            {application.salaryMin}-{application.salaryMax}
+          </TableCell>
+          <TableCell>
+            <a href={link("/applications/:id", { id: application.id })}>
+              <Icon id="view" />
+            </a>
+          </TableCell>
+        </TableRow>
+      ))}
     </TableBody>
   </Table>
 )
