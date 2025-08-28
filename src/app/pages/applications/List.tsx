@@ -76,7 +76,12 @@ export const List = async ({ request }: Props) => {
             )}
           </Button>
           <Button asChild>
-            <a href={link("/applications/new")}>
+            {/** biome-ignore lint/a11y/useAnchorContent: Redundant anchor element */}
+            <a
+              href={link("/applications/new")}
+              aria-hidden="true"
+              tabIndex={-1}
+            >
               <Icon id="plus" />
               New Application
             </a>

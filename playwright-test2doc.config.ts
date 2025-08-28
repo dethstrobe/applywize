@@ -13,7 +13,7 @@ export default defineConfig({
     [
       "@test2doc/playwright",
       {
-        outputDir: "./doc/docs", // Change this to your Docusaurus docs directory
+        outputDir: "./doc/docs", // Change this to your Docusaurus docs directory,
       },
     ],
   ],
@@ -25,9 +25,20 @@ export default defineConfig({
 
   // Use only one browser for faster doc generation
   projects: [
+    { name: "setup", testMatch: /.*\.setup\.ts/ },
     {
-      name: "chromium",
+      name: "public",
       use: { ...devices["Desktop Chrome"] },
+      testDir: "./tests/public",
+    },
+    {
+      name: "authenticated",
+      use: {
+        ...devices["Desktop Chrome"],
+        storageState: "playwright/.auth/user.json",
+      },
+      testDir: "./tests/authenticated",
+      dependencies: ["setup"],
     },
   ],
 

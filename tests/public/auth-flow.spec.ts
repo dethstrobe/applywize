@@ -7,6 +7,7 @@ import {
 } from "@playwright/test"
 import { screenshot } from "@test2doc/playwright/screenshots"
 import { withDocCategory, withDocMeta } from "@test2doc/playwright/DocMeta"
+import { simulateSuccessfulPasskeyInput } from "../util"
 
 test.describe(
   withDocCategory("User Authentication Flow", {
@@ -16,7 +17,7 @@ test.describe(
   () => {
     test.describe
       .serial(withDocMeta("Authentication", { sidebar_position: 1 }), () => {
-        const username = `testuser-${Date.now()}`
+        const username = `testuser-public-${Date.now()}`
         let client: CDPSession
         let authenticatorId: string
         let sharedContext: BrowserContext
@@ -32,44 +33,6 @@ test.describe(
           await client?.detach()
           await sharedContext?.close()
         })
-
-        async function simulateSuccessfulPasskeyInput(
-          client: CDPSession,
-          authenticatorId: string,
-          operationTrigger: () => Promise<void>,
-        ) {
-          // initialize event listeners to wait for a successful passkey input event
-          const operationCompleted = new Promise<void>((resolve) => {
-            client.on("WebAuthn.credentialAdded", () => resolve())
-            client.on("WebAuthn.credentialAsserted", () => resolve())
-          })
-
-          // set isUserVerified option to true
-          // (so that subsequent passkey operations will be successful)
-          await client.send("WebAuthn.setUserVerified", {
-            authenticatorId: authenticatorId,
-            isUserVerified: true,
-          })
-
-          // set automaticPresenceSimulation option to true
-          // (so that the virtual authenticator will respond to the next passkey prompt)
-          await client.send("WebAuthn.setAutomaticPresenceSimulation", {
-            authenticatorId: authenticatorId,
-            enabled: true,
-          })
-
-          // perform a user action that triggers passkey prompt
-          await operationTrigger()
-
-          // wait to receive the event that the passkey was successfully registered or verified
-          await operationCompleted
-
-          // set automaticPresenceSimulation option back to false
-          await client.send("WebAuthn.setAutomaticPresenceSimulation", {
-            authenticatorId,
-            enabled: false,
-          })
-        }
 
         test("Register a new user", async ({ page: _ }, testInfo) => {
           client = await sharedPage.context().newCDPSession(sharedPage)

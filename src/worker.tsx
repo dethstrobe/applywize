@@ -54,10 +54,9 @@ export default defineApp([
       route("/privacy", () => <h1>Privacy Policy</h1>),
     ]),
     prefix("/applications", [
-      isAuthenticated,
-      route("/", List),
-      route("/new", () => <h1>New Application</h1>),
-      route("/:id", () => <h1>Application Details</h1>),
+      route("/", [isAuthenticated, List]),
+      route("/new", [isAuthenticated, () => <h1>New Application</h1>]),
+      route("/:id", [isAuthenticated, () => <h1>Application Details</h1>]),
     ]),
   ]),
 ])

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useTransition } from "react"
+import { useRef, useState, useTransition } from "react"
 import { startRegistration } from "@simplewebauthn/browser"
 import {
   finishPasskeyRegistration,
@@ -13,11 +13,12 @@ import { Alert, AlertTitle } from "@/app/components/ui/alert"
 import { AlertCircle } from "lucide-react"
 
 export const Signup = () => {
-  const [username, setUsername] = useState("")
+  const usernameInput = useRef<HTMLInputElement>(null)
   const [result, setResult] = useState("")
   const [isPending, startTransition] = useTransition()
 
   const passkeyRegister = async () => {
+    const username = usernameInput.current?.value || ""
     // 1. Get a challenge from the worker
     const options = await startPasskeyRegistration(username)
 
@@ -26,8 +27,6 @@ export const Signup = () => {
 
     // 3. Give the signed challenge to the worker to finish the registration process
     const success = await finishPasskeyRegistration(username, registration)
-
-    console.log("Registration success:", success)
 
     if (!success) {
       setResult("Registration failed")
@@ -57,23 +56,26 @@ export const Signup = () => {
         <p className="py-6">Enter a username to setup an account.</p>
         {result && (
           <Alert variant="destructive" className="mb-5">
-            <AlertCircle className="h-4 w-4"/>
+            <AlertCircle className="h-4 w-4" />
             <AlertTitle>{result}</AlertTitle>
           </Alert>
         )}
         <label>
           <span className="sr-only">Username</span>
-          <input
-            type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            placeholder="Username"
-          />
+          <input ref={usernameInput} type="text" placeholder="Username" />
         </label>
-        <Button onClick={handlePerformPasskeyRegister} disabled={isPending} className="font-display w-full mb-6">
+        <Button
+          onClick={handlePerformPasskeyRegister}
+          disabled={isPending}
+          className="font-display w-full mb-6"
+        >
           {isPending ? "..." : "Register with passkey"}
         </Button>
-        <p>By clicking continue, you agree to our <a href={link('/legal/terms')}>Terms of Service</a> and <a href={link('/legal/privacy')}>Privacy Policy</a>.</p>
+        <p>
+          By clicking continue, you agree to our{" "}
+          <a href={link("/legal/terms")}>Terms of Service</a> and{" "}
+          <a href={link("/legal/privacy")}>Privacy Policy</a>.
+        </p>
       </div>
     </AuthLayout>
   )

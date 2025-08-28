@@ -73,3 +73,5 @@ generated/
 /blob-report/
 /playwright/.cache/
 playwright/.auth
+
+playwright/.auth

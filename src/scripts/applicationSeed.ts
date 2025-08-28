@@ -23,7 +23,7 @@ export default defineScript(async ({ env }) => {
         status: {
           connect: { id: 1 },
         },
-        user: { connect: { id: "e2ac4ee8-591e-4b92-a2e4-ea95c7da0f60" } },
+        user: { connect: { id: "1a24be28-5448-45a5-8f4f-1954c13a62a0" } },
         salaryMin: "100000",
         salaryMax: "120000",
         jobTitle: "Software Engineer",
