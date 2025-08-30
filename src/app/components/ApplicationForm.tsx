@@ -29,7 +29,7 @@ export const ApplicationForm = ({ statuses }: Props) => {
 
   return (
     <form action={handleSubmit}>
-      <div className="grid grid-col-2 gap-[200px] px-page-side mb-[75px]">
+      <div className="grid grid-cols-2 gap-[200px] px-page-side mb-[75px]">
         <div>
           <form>
             <h2>Company Information</h2>
