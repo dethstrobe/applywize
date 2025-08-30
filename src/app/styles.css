@@ -151,11 +151,31 @@ body {
   h3 {
     @apply font-display font-bold;
   }
+  h2 {
+    @apply text-2xl font-bold;
+  }
   input[type="text"] {
     @apply border-border border-1 rounded-md px-3 h-9 block w-full mb-2 text-base;
   }
   nav {
     @apply font-display font-medium text-sm;
+  }
+  label,
+  .label {
+    @apply text-sm font-medium block;
+  }
+  label:not(:has(+ .input-description)) {
+    @apply mb-2;
+  }
+  textarea,
+  input[type="email"],
+  input[type="date"],
+  input[type="url"],
+  input[type="text"] {
+    @apply border-border border-1 rounded-md px-3 h-9 block w-full mb-2 text-base;
+  }
+  textarea {
+    @apply h-[80px] py-3;
   }
 }
 
@@ -168,6 +188,30 @@ body {
   }
   .page-wrapper {
     @apply bg-bg min-h-screen min-w-screen p-12;
+  }
+  .page-description {
+    @apply text-zinc-500;
+  }
+  .field {
+    @apply pt-8;
+  }
+  .label-inside {
+    @apply relative flex border border-border outline-1 outline-white rounded-md mb-2 h-9;
+    label {
+      @apply text-sm font-medium px-3 bg-[#f4f4f5] rounded-sm center my-1 ml-1;
+    }
+    input[type="text"] {
+      @apply border-none flex-1 relative top-1 outline-none focus:border-none focus:outline-none h-auto;
+    }
+    &:has(input[type="text"]) {
+      @apply outline-2 outline-[#919191];
+    }
+  }
+  .input-description {
+    @apply text-sm text-zinc-500 mb-2;
+  }
+  .box {
+    @apply border border-border rounded-md p-6 mb-5;
   }
 }
 
