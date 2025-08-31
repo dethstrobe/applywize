@@ -28,60 +28,54 @@ export const ApplicationForm = ({ statuses }: Props) => {
   }
 
   return (
-    <form action={handleSubmit}>
+    <form action={handleSubmit} aria-labelledby="company-info-heading">
       <div className="grid grid-cols-2 gap-[200px] px-page-side mb-[75px]">
-        <div>
-          <form>
-            <h2>Company Information</h2>
-            <fieldset className="field">
-              <label htmlFor="company">Company</label>
-              <p className="input-description">What company caught your eye?</p>
-              <input type="text" id="company" className="company" />
-            </fieldset>
+        <section>
+          <h2 id="company-info-heading">Company Information</h2>
+          <fieldset className="field">
+            <label htmlFor="company">Company</label>
+            <p className="input-description">What company caught your eye?</p>
+            <input type="text" id="company" name="company" />
+          </fieldset>
 
-            <fieldset className="field">
-              <label htmlFor="jobTitle">Job Title</label>
-              <p className="input-description">What's the job you're after?</p>
-              <input type="text" id="jobTitle" className="jobTitle" />
-            </fieldset>
+          <fieldset className="field">
+            <label htmlFor="jobTitle">Job Title</label>
+            <p className="input-description">What's the job you're after?</p>
+            <input type="text" id="jobTitle" name="jobTitle" />
+          </fieldset>
 
-            <fieldset className="field">
-              <label htmlFor="jobDescription">
-                Job Description / Requirements
-              </label>
-              <p className="input-description">What are they looking for?</p>
-              <input
-                type="text"
-                id="jobDescription"
-                className="jobDescription"
-              />
-            </fieldset>
+          <fieldset className="field">
+            <label htmlFor="jobDescription">
+              Job Description / Requirements
+            </label>
+            <p className="input-description">What are they looking for?</p>
+            <input type="text" id="jobDescription" name="jobDescription" />
+          </fieldset>
 
-            <fieldset className="field">
-              <div className="label">Salary Range</div>
-              <p className="input-description">What does the pay look like?</p>
-              <div className="flex gap-4">
-                <div className="flex-1 label-inside">
-                  <label htmlFor="salaryMin">Min</label>
-                  <input type="text" id="salaryMin" className="salaryMin" />
-                </div>
-                <div className="flex-1 label-inside">
-                  <label htmlFor="salaryMax">Max</label>
-                  <input type="text" id="salaryMax" className="salaryMax" />
-                </div>
+          <fieldset className="field">
+            <div className="label">Salary Range</div>
+            <p className="input-description">What does the pay look like?</p>
+            <div className="flex gap-4">
+              <div className="flex-1 label-inside">
+                <label htmlFor="salaryMin">Min</label>
+                <input type="text" id="salaryMin" name="salaryMin" />
               </div>
-            </fieldset>
-
-            <fieldset className="field">
-              <label htmlFor="url">Application URL</label>
-              <p className="input-description">Where can we apply?</p>
-              <input type="text" id="url" className="url" />
-            </fieldset>
-            <div className="field">
-              <Button type="submit">Create</Button>
+              <div className="flex-1 label-inside">
+                <label htmlFor="salaryMax">Max</label>
+                <input type="text" id="salaryMax" name="salaryMax" />
+              </div>
             </div>
-          </form>
-        </div>
+          </fieldset>
+
+          <fieldset className="field">
+            <label htmlFor="url">Application URL</label>
+            <p className="input-description">Where can we apply?</p>
+            <input type="text" id="url" name="url" />
+          </fieldset>
+          <div className="field">
+            <Button type="submit">Create</Button>
+          </div>
+        </section>
 
         <div>
           <div className="box">
@@ -90,8 +84,8 @@ export const ApplicationForm = ({ statuses }: Props) => {
           </div>
           <div className="box">
             <label htmlFor="application-status">Application Status</label>
-            <Select>
-              <SelectTrigger>
+            <Select name="status">
+              <SelectTrigger id="application-status">
                 <SelectValue placeholder="Select a status" />
               </SelectTrigger>
               <SelectContent>

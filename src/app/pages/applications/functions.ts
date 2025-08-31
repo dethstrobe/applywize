@@ -23,7 +23,7 @@ export const createApplication = async (formData: FormData) => {
         },
         company: {
           create: {
-            name: formData.get("companyName") as string,
+            name: formData.get("company") as string,
             contacts: {
               create: {
                 firstName: "John",

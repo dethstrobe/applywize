@@ -37,3 +37,44 @@ export async function simulateSuccessfulPasskeyInput(
   //   enabled: false,
   // })
 }
+
+export function TodaysDate() {
+  const today = new Date()
+  const dayNames = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ]
+  const monthNames = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ]
+
+  const dayName = dayNames[today.getDay()]
+  const monthName = monthNames[today.getMonth()]
+  const day = today.getDate()
+  const year = today.getFullYear()
+
+  // Add ordinal suffix (st, nd, rd, th)
+  const getOrdinal = (n: number) => {
+    const s = ["th", "st", "nd", "rd"]
+    const v = n % 100
+    return n + (s[(v - 20) % 10] || s[v] || s[0])
+  }
+
+  return `${dayName}, ${monthName} ${getOrdinal(day)}, ${year}`
+}
