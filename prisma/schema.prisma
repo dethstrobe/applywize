@@ -65,6 +65,8 @@ model Contact {
   company     Company?  @relation(fields: [companyId], references: [id])
   createdAt   DateTime  @default(now())
   updatedAt   DateTime? @updatedAt
+  userId     String
+  user       User      @relation(fields: [userId], references: [id])
 }
 
 model Credential {
@@ -87,4 +89,5 @@ model User {
   updatedAt    DateTime?   @updatedAt
   applications Application[]
   credentials  Credential[] // Relationship: One user can have many credentials
+  contacts     Contact[]
 }

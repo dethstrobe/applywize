@@ -10,9 +10,13 @@ import {
 import { InteriorLayout } from "@/app/layouts/InteriorLayout"
 import { link } from "@/app/shared/links"
 import { db } from "@/db"
+import { RequestInfo } from "rwsdk/worker"
 
-export const New = async () => {
+export const New = async ({ ctx }: RequestInfo) => {
   const statuses = await db.applicationStatus.findMany()
+  const contacts = await db.contact.findMany({
+    where: { companyId: null, userId: ctx.user?.id ?? "" },
+  })
   return (
     <InteriorLayout>
       <div className="mb-12 -mt-7 pl-[120px]">
@@ -34,7 +38,7 @@ export const New = async () => {
         <h1 className="page-title">New Application</h1>
         <p className="page-description">Create a new application.</p>
       </div>
-      <ApplicationForm statuses={statuses} />
+      <ApplicationForm statuses={statuses} contacts={contacts} />
     </InteriorLayout>
   )
 }
