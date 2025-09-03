@@ -113,12 +113,12 @@ export const ApplicationForm = ({ statuses, contacts }: Props) => {
             </Select>
           </div>
           <div className="box">
-            <h3>Contacts</h3>
+            <h3 id="contacts-heading">Contacts</h3>
             <p className="input-description">
               Invite your team members to collaborate.
             </p>
             {contacts && (
-              <ul className="mb-4">
+              <ul className="mb-4" aria-labelledby="contacts-heading">
                 {contacts.map((contact) => (
                   <li key={contact.id}>
                     <ContactCard contact={contact} />

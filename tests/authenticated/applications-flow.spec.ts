@@ -170,6 +170,57 @@ test.describe(
               await newOption.click()
             })
 
+            await test.step(`#### Add a Contact for the Application
+              Open the Add a Contact sheet by clicking the "Add a contact" button.`, async () => {
+              const addContactButton = page.getByRole("button", {
+                name: "Add a contact",
+              })
+              await screenshot(testInfo, addContactButton)
+              await addContactButton.click()
+            })
+            await test.step("##### Enter the First Name of the contact", async () => {
+              const firstNameInput = page.getByRole("textbox", {
+                name: "First Name",
+              })
+              await firstNameInput.fill("John")
+              await screenshot(testInfo, firstNameInput)
+            })
+            await test.step("##### Enter the Last Name of the contact", async () => {
+              const lastNameInput = page.getByRole("textbox", {
+                name: "Last Name",
+              })
+              await lastNameInput.fill("Doe")
+              await screenshot(testInfo, lastNameInput)
+            })
+            await test.step("##### Enter the contacts role in the company", async () => {
+              const roleInput = page.getByRole("textbox", {
+                name: "Role",
+              })
+              await roleInput.fill("Hiring Manager")
+              await screenshot(testInfo, roleInput)
+            })
+            await test.step("##### Enter the contacts email address", async () => {
+              const emailInput = page.getByRole("textbox", {
+                name: "Email",
+              })
+              await emailInput.fill("john.doe@example.com")
+              await screenshot(testInfo, emailInput)
+            })
+            await test.step('##### Add the contact by clicking the "Create a Contact" button', async () => {
+              const createButton = page.getByRole("button", {
+                name: "Create a contact",
+              })
+              await screenshot(testInfo, createButton)
+              await createButton.click()
+            })
+            await test.step("Your new contact appears on the Contacts section", async () => {
+              const contactCard = page.getByRole("listitem").filter({
+                hasText: "John Doe",
+              })
+              await expect(contactCard).toBeVisible()
+              await screenshot(testInfo, contactCard)
+            })
+
             await test.step("#### Submit the form", async () => {
               const submitButton = page.getByRole("button", {
                 name: "Create",
@@ -186,6 +237,72 @@ test.describe(
               const newlyAddedApplication = page.getByText(corpName)
               await expect(newlyAddedApplication).toBeVisible()
               await screenshot(testInfo, newlyAddedApplication)
+            })
+          })
+
+          test("Removing a contact from a new application", async ({
+            page,
+          }, testInfo) => {
+            await test.step("While on the new applications page if you've already added a contact", async () => {
+              await page.goto("/applications/new")
+
+              await page
+                .getByRole("button", {
+                  name: "Add a contact",
+                })
+                .click()
+
+              await page
+                .getByRole("textbox", { name: "First Name" })
+                .fill("John")
+              await page.getByRole("textbox", { name: "Last Name" }).fill("Doe")
+              await page
+                .getByRole("textbox", { name: "Email" })
+                .fill("john.doe@example.com")
+              await page
+                .getByRole("textbox", { name: "Role" })
+                .fill("Hiring Manager")
+
+              await page
+                .getByRole("button", {
+                  name: "Create",
+                })
+                .click()
+
+              const contactCard = page
+                .getByRole("listitem")
+                .filter({ hasText: "John Doe" })
+              await expect(contactCard).toBeVisible()
+              await screenshot(testInfo, contactCard)
+            })
+
+            await test.step("Hover over the contact card to make the delete button appear", async () => {
+              await page
+                .getByRole("listitem")
+                .filter({ hasText: "John Doe" })
+                .hover()
+              const deleteButton = page.getByRole("button", {
+                name: "Delete contact John Doe",
+              })
+              await expect(deleteButton).toBeVisible()
+              await screenshot(testInfo, deleteButton)
+            })
+
+            await test.step("clicking the delete button will remove the contact from the application", async () => {
+              await page
+                .getByRole("button", {
+                  name: "Delete contact John Doe",
+                })
+                .click()
+              const contactList = page.getByRole("list", { name: "Contacts" })
+              await screenshot(testInfo, contactList)
+
+              await expect(
+                page.getByRole("heading", {
+                  name: "John Doe",
+                }),
+              ).not.toBeVisible()
+              await expect(contactList.locator("li")).toHaveCount(0)
             })
           })
 
