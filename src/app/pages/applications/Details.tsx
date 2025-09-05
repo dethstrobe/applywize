@@ -44,17 +44,19 @@ export const Details = async ({ params }: RequestInfo) => {
       </div>
       <div className="px-page-side">
         <header className="flex justify-between border-b-1 border-border pb-6 mb-12">
-          <div className="flex items-center gap-5 mb-1">
-            <h1 className="page-title">{application?.jobTitle}</h1>
-            <Badge
-              variant={
-                application?.status?.status.toLowerCase() as VariantProps<
-                  typeof badgeVariants
-                >["variant"]
-              }
-            >
-              {application?.status?.status}
-            </Badge>
+          <div>
+            <div className="flex items-center gap-5 mb-1">
+              <h1 className="page-title">{application?.jobTitle}</h1>
+              <Badge
+                variant={
+                  application?.status?.status.toLowerCase() as VariantProps<
+                    typeof badgeVariants
+                  >["variant"]
+                }
+              >
+                {application?.status?.status}
+              </Badge>
+            </div>
             <p>
               <span className="text-zinc-500">at</span>{" "}
               {application?.company.name}
@@ -74,18 +76,20 @@ export const Details = async ({ params }: RequestInfo) => {
           </div>
         </header>
         <div className="two-column-grid">
-          <div className="mb-12">{application?.jobDescription}</div>
-          <div className="flex items-center gap-5">
-            <Button variant="secondary" asChild>
-              <a
-                href={link("/applications/:id/edit", {
-                  id: application?.id ?? "",
-                })}
-              >
-                <Icon id="edit" size={16} /> Edit
-              </a>
-            </Button>
-            <DeleteApplicationButton applicationId={application?.id ?? ""} />
+          <div>
+            <div className="mb-12">{application?.jobDescription}</div>
+            <div className="flex items-center gap-5">
+              <Button variant="secondary" asChild>
+                <a
+                  href={link("/applications/:id/edit", {
+                    id: application?.id ?? "",
+                  })}
+                >
+                  <Icon id="edit" size={16} /> Edit
+                </a>
+              </Button>
+              <DeleteApplicationButton applicationId={application?.id ?? ""} />
+            </div>
           </div>
           <aside>
             <div className="box">

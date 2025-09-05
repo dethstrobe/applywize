@@ -71,7 +71,10 @@ export const ApplicationsTable: FC<Props> = ({ applications }) => (
             {application.salaryMin}-{application.salaryMax}
           </TableCell>
           <TableCell>
-            <a href={link("/applications/:id", { id: application.id })}>
+            <a
+              href={link("/applications/:id", { id: application.id })}
+              aria-label={`View details for ${application.company.name} ${application.jobTitle}`}
+            >
               <Icon id="view" />
             </a>
           </TableCell>
