@@ -10,7 +10,7 @@ import {
 import { InteriorLayout } from "@/app/layouts/InteriorLayout"
 import { link } from "@/app/shared/links"
 import { db } from "@/db"
-import { RequestInfo } from "rwsdk/worker"
+import type { RequestInfo } from "rwsdk/worker"
 
 export const New = async ({ ctx }: RequestInfo) => {
   const statuses = await db.applicationStatus.findMany()
@@ -19,7 +19,7 @@ export const New = async ({ ctx }: RequestInfo) => {
   })
   return (
     <InteriorLayout>
-      <div className="mb-12 -mt-7 pl-[120px]">
+      <div className="breadcrumbs">
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>

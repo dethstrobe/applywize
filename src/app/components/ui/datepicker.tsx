@@ -15,10 +15,13 @@ import {
 
 interface Props {
   name: string
+  defaultValue?: string
 }
 
-export function DatePicker({ name }: Props) {
-  const [date, setDate] = React.useState<Date>()
+export function DatePicker({ name, defaultValue = "" }: Props) {
+  const [date, setDate] = React.useState<Date>(
+    defaultValue ? new Date(defaultValue) : new Date(),
+  )
 
   return (
     <>

@@ -1,6 +1,6 @@
 "use client"
 
-import { ApplicationStatus, Contact } from "@generated/prisma/client"
+import { ApplicationStatus } from "@generated/prisma/client"
 import { Button } from "./ui/button"
 import { DatePicker } from "./ui/datepicker"
 import {
@@ -10,7 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./ui/select"
-import { createApplication } from "@/app/pages/applications/functions"
+import { updateApplication } from "@/app/pages/applications/functions"
 import {
   Sheet,
   SheetContent,
@@ -23,17 +23,20 @@ import { Icon } from "./Icon"
 import { ContactForm } from "./ContactForm"
 import { useState } from "react"
 import { ContactCard } from "./ContactCard"
+import type { ApplicationWithRelations } from "../pages/applications/List"
+import Link from "@theme/DocSidebarItem/Link"
+import { link } from "../shared/links"
 
 interface Props {
   statuses: ApplicationStatus[]
-  contacts: Contact[]
+  application: ApplicationWithRelations
 }
 
-export const ApplicationForm = ({ statuses, contacts }: Props) => {
+export const EditApplicationForm = ({ statuses, application }: Props) => {
   const [isContactSheetOpen, setIsContactSheetOpen] = useState(false)
   const handleSubmit = async (formData: FormData) => {
-    formData.append("contacts", JSON.stringify(contacts))
-    const result = await createApplication(formData)
+    formData.append("contacts", JSON.stringify(application))
+    const result = await updateApplication(formData)
 
     if (result.success) {
       window.location.href = "/applications"
@@ -46,17 +49,28 @@ export const ApplicationForm = ({ statuses, contacts }: Props) => {
     <form action={handleSubmit} aria-labelledby="company-info-heading">
       <div className="px-page-side two-column-grid">
         <section>
+          <input type="hidden" name="id" value={application.id} />
           <h2 id="company-info-heading">Company Information</h2>
           <fieldset className="field">
             <label htmlFor="company">Company</label>
             <p className="input-description">What company caught your eye?</p>
-            <input type="text" id="company" name="company" />
+            <input
+              type="text"
+              id="company"
+              name="company"
+              defaultValue={application.company.name}
+            />
           </fieldset>
 
           <fieldset className="field">
             <label htmlFor="jobTitle">Job Title</label>
             <p className="input-description">What's the job you're after?</p>
-            <input type="text" id="jobTitle" name="jobTitle" />
+            <input
+              type="text"
+              id="jobTitle"
+              name="jobTitle"
+              defaultValue={application.jobTitle ?? ""}
+            />
           </fieldset>
 
           <fieldset className="field">
@@ -64,7 +78,12 @@ export const ApplicationForm = ({ statuses, contacts }: Props) => {
               Job Description / Requirements
             </label>
             <p className="input-description">What are they looking for?</p>
-            <input type="text" id="jobDescription" name="jobDescription" />
+            <input
+              type="text"
+              id="jobDescription"
+              name="jobDescription"
+              defaultValue={application.jobDescription ?? ""}
+            />
           </fieldset>
 
           <fieldset className="field">
@@ -73,11 +92,21 @@ export const ApplicationForm = ({ statuses, contacts }: Props) => {
             <div className="flex gap-4">
               <div className="flex-1 label-inside">
                 <label htmlFor="salaryMin">Min</label>
-                <input type="text" id="salaryMin" name="salaryMin" />
+                <input
+                  type="text"
+                  id="salaryMin"
+                  name="salaryMin"
+                  defaultValue={application.salaryMin ?? ""}
+                />
               </div>
               <div className="flex-1 label-inside">
                 <label htmlFor="salaryMax">Max</label>
-                <input type="text" id="salaryMax" name="salaryMax" />
+                <input
+                  type="text"
+                  id="salaryMax"
+                  name="salaryMax"
+                  defaultValue={application.salaryMax ?? ""}
+                />
               </div>
             </div>
           </fieldset>
@@ -85,21 +114,37 @@ export const ApplicationForm = ({ statuses, contacts }: Props) => {
           <fieldset className="field">
             <label htmlFor="url">Application URL</label>
             <p className="input-description">Where can we apply?</p>
-            <input type="text" id="url" name="url" />
+            <input
+              type="text"
+              id="url"
+              name="url"
+              defaultValue={application.postingUrl ?? ""}
+            />
           </fieldset>
-          <div className="field">
-            <Button type="submit">Create</Button>
+          <div className="field flex item-center gap-4">
+            <Button type="submit">Update</Button>
+            <Button variant="secondary" asChild>
+              <a href={link("/applications/:id", { id: application.id })}>
+                Cancel
+              </a>
+            </Button>
           </div>
         </section>
 
         <div>
           <div className="box">
             <label htmlFor="dateApplied">Application submission date</label>
-            <DatePicker name="dateApplied" />
+            <DatePicker
+              name="dateApplied"
+              defaultValue={application.dateApplied?.toISOString() ?? ""}
+            />
           </div>
           <div className="box">
             <label htmlFor="application-status">Application Status</label>
-            <Select name="status">
+            <Select
+              name="statusId"
+              defaultValue={application.status.id.toString()}
+            >
               <SelectTrigger id="application-status">
                 <SelectValue placeholder="Select a status" />
               </SelectTrigger>
@@ -117,9 +162,9 @@ export const ApplicationForm = ({ statuses, contacts }: Props) => {
             <p className="input-description">
               Invite your team members to collaborate.
             </p>
-            {contacts && (
+            {application.company.contacts && (
               <ul className="mb-4" aria-labelledby="contacts-heading">
-                {contacts.map((contact) => (
+                {application.company.contacts.map((contact) => (
                   <li key={contact.id}>
                     <ContactCard contact={contact} isEditable />
                   </li>
@@ -142,6 +187,7 @@ export const ApplicationForm = ({ statuses, contacts }: Props) => {
                   </SheetDescription>
                   <ContactForm
                     closeSheet={() => setIsContactSheetOpen(false)}
+                    companyId={application.company.id}
                   />
                 </SheetHeader>
               </SheetContent>

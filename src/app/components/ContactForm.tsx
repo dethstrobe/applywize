@@ -5,10 +5,15 @@ import { Button } from "./ui/button"
 
 interface ContactFormProps {
   closeSheet: () => void
+  companyId?: string
 }
 
-export const ContactForm = ({ closeSheet }: ContactFormProps) => {
+export const ContactForm = ({
+  closeSheet,
+  companyId = "",
+}: ContactFormProps) => {
   const handleSubmit = async (formData: FormData) => {
+    formData.append("companyId", companyId)
     const result = await createContact(formData)
     if (result.success) {
       toast.success("Contact created successfully")

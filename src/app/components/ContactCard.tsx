@@ -6,7 +6,12 @@ import { Icon } from "./Icon"
 import { toast } from "sonner"
 import { deleteContact } from "../pages/applications/functions"
 
-export const ContactCard = ({ contact }: { contact: Contact }) => {
+interface Props {
+  contact: Contact
+  isEditable?: boolean
+}
+
+export const ContactCard = ({ contact, isEditable }: Props) => {
   const handleDelete = async () => {
     const result = await deleteContact(contact.id)
     if (result.success) {
@@ -17,16 +22,18 @@ export const ContactCard = ({ contact }: { contact: Contact }) => {
   }
   return (
     <div className="relative group/card flex items-center gap-4 mb-6">
-      <div className="pr-5 hidden group-hover/card:block absolute top-2 -left-[37px]">
-        <button
-          aria-label={`Delete contact ${contact.firstName} ${contact.lastName}`}
-          onClick={handleDelete}
-          type="button"
-          className="hover:bg-black cursor-pointer text-white fill-current rounded-full bg-destructive p-1"
-        >
-          <Icon id="close" size={16} />
-        </button>
-      </div>
+      {isEditable && (
+        <div className="pr-5 hidden group-hover/card:block absolute top-2 -left-[37px]">
+          <button
+            aria-label={`Delete contact ${contact.firstName} ${contact.lastName}`}
+            onClick={handleDelete}
+            type="button"
+            className="hover:bg-black cursor-pointer text-white fill-current rounded-full bg-destructive p-1"
+          >
+            <Icon id="close" size={16} />
+          </button>
+        </div>
+      )}
       <div>
         <Avatar className="size-10">
           <AvatarFallback>

@@ -10,6 +10,8 @@ import { type User, db, setupDb } from "@/db"
 import { env } from "cloudflare:workers"
 import { List } from "./app/pages/applications/List"
 import { New } from "./app/pages/applications/New"
+import { Details } from "./app/pages/applications/Details"
+import { Edit } from "./app/pages/applications/Edit"
 export { SessionDurableObject } from "./session/durableObject"
 
 export type AppContext = {
@@ -57,7 +59,8 @@ export default defineApp([
     prefix("/applications", [
       route("/", [isAuthenticated, List]),
       route("/new", [isAuthenticated, New]),
-      route("/:id", [isAuthenticated, () => <h1>Application Details</h1>]),
+      route("/:id", [isAuthenticated, Details]),
+      route("/:id/edit", [isAuthenticated, Edit]),
     ]),
   ]),
 ])
