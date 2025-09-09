@@ -18,9 +18,9 @@ interface Props {
   defaultValue?: string
 }
 
-export function DatePicker({ name, defaultValue = "" }: Props) {
-  const [date, setDate] = React.useState<Date>(
-    defaultValue ? new Date(defaultValue) : new Date(),
+export function DatePicker({ name, defaultValue }: Props) {
+  const [date, setDate] = React.useState<Date | undefined>(
+    defaultValue ? new Date(defaultValue) : undefined,
   )
 
   return (

@@ -7,10 +7,10 @@ description: Where to find the Terms of Service for the application
 ## Sign up page
 
 Contains a link to the Terms of Service
-![screenshot](./test2doc-1756862407496-12.png)
+![screenshot](./test2doc-1757409197711-12.png)
 
 ## Login page
 
 Contains a link to the Terms of Service
-![screenshot](./test2doc-1756862407940-13.png)
+![screenshot](./test2doc-1757409198057-13.png)
 

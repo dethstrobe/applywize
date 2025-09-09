@@ -53,6 +53,7 @@ export const Details = async ({ params }: RequestInfo) => {
                     typeof badgeVariants
                   >["variant"]
                 }
+                aria-label={`Application status: ${application?.status?.status}`}
               >
                 {application?.status?.status}
               </Badge>
@@ -77,7 +78,9 @@ export const Details = async ({ params }: RequestInfo) => {
         </header>
         <div className="two-column-grid">
           <div>
-            <div className="mb-12">{application?.jobDescription}</div>
+            <section className="mb-12" aria-label="Job Description">
+              <p>{application?.jobDescription}</p>
+            </section>
             <div className="flex items-center gap-5">
               <Button variant="secondary" asChild>
                 <a
@@ -92,8 +95,10 @@ export const Details = async ({ params }: RequestInfo) => {
             </div>
           </div>
           <aside>
-            <div className="box">
-              <h3 className="mb-4">Compensation</h3>
+            <section className="box" aria-labelledby="compensation-heading">
+              <h3 className="mb-4" id="compensation-heading">
+                Compensation
+              </h3>
               <div className="flex items-center gap-6">
                 <Icon id="salary" size={32} />
                 <div className="text-small">
@@ -103,8 +108,8 @@ export const Details = async ({ params }: RequestInfo) => {
                   </p>
                 </div>
               </div>
-            </div>
-            <div className="box">
+            </section>
+            <section className="box" aria-labelledby="contacts-heading">
               <h3 id="contacts-heading">Contacts</h3>
               <p className="input-description">
                 Invite your team members to collaborate.
@@ -118,7 +123,7 @@ export const Details = async ({ params }: RequestInfo) => {
                   ))}
                 </ul>
               )}
-            </div>
+            </section>
           </aside>
         </div>
       </div>
