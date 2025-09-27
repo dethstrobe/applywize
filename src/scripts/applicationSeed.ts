@@ -16,7 +16,7 @@ export default defineScript(async ({ env }) => {
                 lastName: "Doe",
                 email: "john.doe@example.com",
                 role: "Hiring Manager",
-                userId: "7d4bd4da-3c6d-4936-b29c-68482393ce89",
+                userId: "1f4144b2-7d80-41bd-a420-98d931e5b320",
               },
             },
           },
@@ -24,7 +24,7 @@ export default defineScript(async ({ env }) => {
         status: {
           connect: { id: 1 },
         },
-        user: { connect: { id: "7d4bd4da-3c6d-4936-b29c-68482393ce89" } },
+        user: { connect: { id: "b96ba2e8-682b-4202-9128-a24eec84f000" } },
         salaryMin: "100000",
         salaryMax: "120000",
         jobTitle: "Software Engineer",
