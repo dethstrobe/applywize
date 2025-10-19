@@ -2,7 +2,7 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "applywize",
   "main": "src/worker.tsx",
-  "compatibility_date": "2025-05-07",
+  "compatibility_date": "2025-08-21",
   "compatibility_flags": [
     "nodejs_compat",
     "no_handle_cross_request_promise_resolution"
@@ -27,9 +27,7 @@
   "migrations": [
     {
       "tag": "v1",
-      "new_sqlite_classes": [
-        "SessionDurableObject"
-      ]
+      "new_sqlite_classes": ["SessionDurableObject"]
     }
   ],
   "d1_databases": [

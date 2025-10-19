@@ -21,7 +21,7 @@ export type AppContext = {
 
 export default defineApp([
   setCommonHeaders(),
-  async ({ ctx, request, headers }) => {
+  async ({ ctx, request, response, isAction }) => {
     await setupDb(env)
     setupSessionStore(env)
 
@@ -29,12 +29,15 @@ export default defineApp([
       ctx.session = await sessions.load(request)
     } catch (error) {
       if (error instanceof ErrorResponse && error.code === 401) {
-        await sessions.remove(request, headers)
-        headers.set("Location", "/user/login")
+        if (isAction) {
+          throw error
+        }
+        await sessions.remove(request, response.headers)
+        response.headers.set("Location", "/user/login")
 
         return new Response(null, {
           status: 302,
-          headers,
+          headers: response.headers,
         })
       }
 
