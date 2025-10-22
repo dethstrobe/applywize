@@ -1,4 +1,5 @@
 import { defineConfig, devices } from "@playwright/test"
+import "@test2doc/playwright/types"
 
 /**
  * Test2Doc Playwright Configuration
@@ -45,6 +46,9 @@ export default defineConfig({
   use: {
     baseURL: "http://localhost:5173", // change to whatever port your app starts on
     trace: "on-first-retry",
+    test2doc: {
+        annotationDefaults: { showArrow: true, text: " " },
+    },
   },
   webServer: {
     command: "pnpm dev", // change with command to start your server

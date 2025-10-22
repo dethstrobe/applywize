@@ -8,10 +8,10 @@ description: Links to the sign up and login pages
 ## Link to the sign up page
 
 Registration link on the login page
-![screenshot](./test2doc-1760987948754-8.png)
+![screenshot](./test2doc-1761165701177-6.png)
 
 ## Link to the login page
 
 Login link on the sign up page
-![screenshot](./test2doc-1760987949086-9.png)
+![screenshot](./test2doc-1761165701662-7.png)
 

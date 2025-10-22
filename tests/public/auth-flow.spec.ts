@@ -54,7 +54,7 @@ test.describe(
 
           authenticatorId = result.authenticatorId
 
-          await test.step("On the sign up page", async () => {
+          await test.step("On the sign up page, `/user/signup`.", async () => {
             await sharedPage.goto("/user/signup")
 
             await screenshot(testInfo, sharedPage)
@@ -65,18 +65,24 @@ test.describe(
             expect(result.credentials).toHaveLength(0)
           })
 
-          await test.step("Fill in the sign up form and submit", async () => {
+          await test.step("Fill in the sign up form with the username you wish to use.", async () => {
             const usernameInput = sharedPage.getByLabel("Username")
-
-            await screenshot(testInfo, usernameInput)
 
             await usernameInput.fill(username)
 
+            await screenshot(testInfo, usernameInput, {
+              annotation: { text: "Enter user name here." },
+            })
+          })
+
+          await test.step("Submit the sign up form to initiate passkey registration.", async () => {
             const submitButton = sharedPage.getByRole("button", {
               name: "Register with passkey",
             })
 
-            await screenshot(testInfo, submitButton)
+            await screenshot(testInfo, submitButton, {
+              annotation: { text: "Click button to submit the form" },
+            })
 
             await simulateSuccessfulPasskeyInput(
               client,
@@ -90,13 +96,13 @@ test.describe(
             expect(result2.credentials).toHaveLength(1)
           })
 
-          await test.step("On the login page should be able to log in with new passkey", async () => {
+          await test.step("On the login page, you can login with the generated new passkey", async () => {
             await expect(
               sharedPage.getByRole("heading", { name: "Login" }),
             ).toBeVisible()
 
-            const loginUsernameInput = sharedPage.getByLabel("Username")
-            await loginUsernameInput.fill(username)
+            // const loginUsernameInput = sharedPage.getByLabel("Username")
+            // await loginUsernameInput.fill(username)
 
             const loginButton = sharedPage.getByRole("button", {
               name: "Login with passkey",
@@ -119,7 +125,7 @@ test.describe(
         test("Login with an existing user", async ({ page: _ }, testInfo) => {
           await client.send("WebAuthn.enable")
 
-          await test.step("On the login page", async () => {
+          await test.step("On the login page, `/user/login`.", async () => {
             await sharedPage.goto("/user/login")
 
             await screenshot(testInfo, sharedPage)
@@ -130,22 +136,24 @@ test.describe(
             expect(result.credentials).toHaveLength(1)
           })
 
-          await test.step("Enter username in to the login form", async () => {
-            const usernameInput = sharedPage.getByLabel("Username")
+          // await test.step("Enter username in to the login form. *optional*", async () => {
+          //   const usernameInput = sharedPage.getByLabel("Username")
 
-            await screenshot(testInfo, usernameInput)
+          //   await screenshot(testInfo, usernameInput)
 
-            await usernameInput.fill(username)
+          //   await usernameInput.fill(username)
 
-            await screenshot(testInfo, usernameInput)
-          })
+          //   await screenshot(testInfo, usernameInput)
+          // })
 
-          await test.step("Click submit button", async () => {
+          await test.step("Click the submit button.", async () => {
             const submitButton = sharedPage.getByRole("button", {
               name: "Login with passkey",
             })
 
-            await screenshot(testInfo, submitButton)
+            await screenshot(testInfo, submitButton, {
+              annotation: { text: "Click the button to trigger the passkey" },
+            })
 
             await simulateSuccessfulPasskeyInput(
               client,
@@ -179,7 +187,7 @@ test.describe(
             await expect(signUpLink).toHaveAttribute("href", "/user/signup")
             await expect(signUpLink).toBeVisible()
 
-            await screenshot(testInfo, signUpLink)
+            await screenshot(testInfo, signUpLink, {annotation: { text: "Click to go to the sign up page" }})
           })
         })
 
@@ -192,7 +200,7 @@ test.describe(
             await expect(loginLink).toHaveAttribute("href", "/user/login")
             await expect(loginLink).toBeVisible()
 
-            await screenshot(testInfo, loginLink)
+            await screenshot(testInfo, loginLink, {annotation: { text: "Click to go to the login page" }})
           })
         })
       },

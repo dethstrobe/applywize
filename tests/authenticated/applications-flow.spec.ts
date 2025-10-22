@@ -384,86 +384,6 @@ test.describe
             })
           })
 
-          test("View the details of an Application", async ({
-            page,
-          }, testInfo) => {
-            const { companyName } = await createApplication(page)
-
-            await test.step("Click on the view detail icon to open the view detail page", async () => {
-              const viewDetailButton = page.getByRole("link", {
-                name: `View details for ${companyName} Software Engineer`,
-              })
-              await screenshot(testInfo, viewDetailButton)
-              await viewDetailButton.click()
-              const heading = page.getByRole("heading", {
-                name: "Software Engineer",
-              })
-              await expect(heading).toBeVisible()
-              await screenshot(testInfo, page)
-            })
-
-            await test.step(`#### Elements on the details page
-              ##### Job Title`, async () => {
-              const jobTitle = page.getByRole("heading", {
-                name: "Software Engineer",
-              })
-              await expect(jobTitle).toBeVisible()
-              await screenshot(testInfo, jobTitle)
-            })
-
-            await test.step("##### Application Status", async () => {
-              const status = page.getByLabel("Application status: New")
-              await expect(status).toBeVisible()
-              await screenshot(testInfo, status)
-            })
-
-            await test.step("##### Link to the job application website", async () => {
-              const website = page.getByRole("link", {
-                name: "View Application",
-              })
-              await expect(website).toBeVisible()
-              await screenshot(testInfo, website)
-            })
-
-            await test.step("##### Job Description", async () => {
-              const jobDescriptionSection = page.getByRole("region", {
-                name: "Job Description",
-              })
-              await expect(jobDescriptionSection).toBeVisible()
-              await screenshot(testInfo, jobDescriptionSection)
-            })
-
-            await test.step("##### Compensation", async () => {
-              const compensation = page.getByRole("region", {
-                name: "Compensation",
-              })
-              await expect(compensation).toBeVisible()
-              await screenshot(testInfo, compensation)
-            })
-
-            await test.step("##### Contacts", async () => {
-              const contacts = page.getByRole("region", { name: "Contacts" })
-              await expect(contacts).toBeVisible()
-              await screenshot(testInfo, contacts)
-            })
-
-            await test.step("##### Edit Application button", async () => {
-              const editButton = page.getByRole("link", {
-                name: "Edit",
-              })
-              await expect(editButton).toBeVisible()
-              await screenshot(testInfo, editButton)
-            })
-
-            await test.step("##### Delete Applications button", async () => {
-              const deleteButton = page.getByRole("button", {
-                name: "Delete",
-              })
-              await expect(deleteButton).toBeVisible()
-              await screenshot(testInfo, deleteButton)
-            })
-          })
-
           test("Filter between active and archived applications", async ({
             page,
           }, testInfo) => {
@@ -517,11 +437,95 @@ test.describe
       )
 
       test.describe(
-        withDocCategory("Edit Application Page", {
-          label: "Edit Application",
+        withDocCategory("View Application Details Page", {
+          label: "Application Details",
           position: 3,
         }),
         () => {
+          test.describe(withDocMeta("View an existing application", {
+            sidebar_position: 1,
+          }), () => {
+            test("View the details of an Application", async ({
+              page,
+            }, testInfo) => {
+              const { companyName } = await createApplication(page)
+
+              await test.step("Click on the view detail icon to open the view detail page", async () => {
+                const viewDetailButton = page.getByRole("link", {
+                  name: `View details for ${companyName} Software Engineer`,
+                })
+                await screenshot(testInfo, viewDetailButton)
+                await viewDetailButton.click()
+                const heading = page.getByRole("heading", {
+                  name: "Software Engineer",
+                })
+                await expect(heading).toBeVisible()
+                await screenshot(testInfo, page)
+              })
+
+              await test.step(`#### Elements on the details page
+              ##### Job Title`, async () => {
+                const jobTitle = page.getByRole("heading", {
+                  name: "Software Engineer",
+                })
+                await expect(jobTitle).toBeVisible()
+                await screenshot(testInfo, jobTitle)
+              })
+
+              await test.step("##### Application Status", async () => {
+                const status = page.getByLabel("Application status: New")
+                await expect(status).toBeVisible()
+                await screenshot(testInfo, status)
+              })
+
+              await test.step("##### Link to the job application website", async () => {
+                const website = page.getByRole("link", {
+                  name: "View Application",
+                })
+                await expect(website).toBeVisible()
+                await screenshot(testInfo, website)
+              })
+
+              await test.step("##### Job Description", async () => {
+                const jobDescriptionSection = page.getByRole("region", {
+                  name: "Job Description",
+                })
+                await expect(jobDescriptionSection).toBeVisible()
+                await screenshot(testInfo, jobDescriptionSection)
+              })
+
+              await test.step("##### Compensation", async () => {
+                const compensation = page.getByRole("region", {
+                  name: "Compensation",
+                })
+                await expect(compensation).toBeVisible()
+                await screenshot(testInfo, compensation)
+              })
+
+              await test.step("##### Contacts", async () => {
+                const contacts = page.getByRole("region", { name: "Contacts" })
+                await expect(contacts).toBeVisible()
+                await screenshot(testInfo, contacts)
+              })
+
+              await test.step("##### Edit Application button", async () => {
+                const editButton = page.getByRole("link", {
+                  name: "Edit",
+                })
+                await expect(editButton).toBeVisible()
+                await screenshot(testInfo, editButton)
+              })
+
+              await test.step("##### Delete Applications button", async () => {
+                const deleteButton = page.getByRole("button", {
+                  name: "Delete",
+                })
+                await expect(deleteButton).toBeVisible()
+                await screenshot(testInfo, deleteButton)
+              })
+            })
+          })
+
           test.describe(
             withDocMeta("Edit an existing application", {
               sidebar_position: 1,
