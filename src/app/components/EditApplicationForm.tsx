@@ -24,7 +24,6 @@ import { ContactForm } from "./ContactForm"
 import { useState } from "react"
 import { ContactCard } from "./ContactCard"
 import type { ApplicationWithRelations } from "../pages/applications/List"
-import Link from "@theme/DocSidebarItem/Link"
 import { link } from "../shared/links"
 
 interface Props {
