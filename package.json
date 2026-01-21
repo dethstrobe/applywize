@@ -81,7 +81,7 @@
     "typescript": "^5.9.3",
     "vibe-rules": "^0.3.91",
     "vite": "^7.1.11",
-    "wrangler": "^4.43.0"
+    "wrangler": "^4.59.1"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
